@@ -15,16 +15,13 @@ Silicon Mac does not download the Intel, Windows or Linux builds.
 **macOS or Linux** — in a terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.sh -o install-cortivar.sh &&
-  sh install-cortivar.sh
+curl -fsSL https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.sh | sh
 ```
 
 **Windows** — in PowerShell:
 
 ```powershell
-$installer = Join-Path $env:TEMP 'install-cortivar.ps1'
-Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1 -OutFile $installer -ErrorAction Stop
-& $installer
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1')))
 ```
 
 **Expected:** the installer prints the version and the full launcher path.
@@ -36,19 +33,26 @@ address from its owner and sign in with your human workspace credential.
 
 ## Choose a version
 
-For a pinned install, download the same script shown above, then **replace
-the invocation** with the command you want. In PowerShell, `$installer` is
-the downloaded file path set above.
+To install **v0.0.1**, copy the line for your shell:
 
-| Select | macOS / Linux | Windows PowerShell |
-| --- | --- | --- |
-| Latest stable | `sh install-cortivar.sh` | `& $installer` |
-| Exact version (example) | `sh install-cortivar.sh --version v0.0.1` | `& $installer -Version v0.0.1` |
-| Exact prerelease (example) | `sh install-cortivar.sh --version v0.1.0-rc.1` | `& $installer -Version v0.1.0-rc.1` |
-| Launcher only | `sh install-cortivar.sh --role launcher` | `& $installer -Role launcher` |
+**macOS / Linux**
 
-Take the exact tag from [published releases](https://github.com/Cortivar/platform-docs/releases).
-`0.0.1` and `v0.0.1` select the same catalog. You can combine role and version.
+```sh
+curl -fsSL https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.sh | sh -s -- --version v0.0.1
+```
+
+**Windows PowerShell**
+
+```powershell
+& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1'))) -Version v0.0.1
+```
+
+For another version, replace `v0.0.1` with its exact tag from
+[Releases](https://github.com/Cortivar/platform-docs/releases). This also works
+for published prereleases (for example, `v0.1.0-rc.1`).
+`0.0.1` and `v0.0.1` select the same catalog. To install just the launcher,
+append `--role launcher` (macOS/Linux) or `-Role launcher` (PowerShell) to
+the pinned command above.
 An exact pin bypasses [`channels/stable`](channels/stable); if that catalog
 doesn’t exist, the installer stops rather than choosing another build.
 If `stable` reads `unpublished`, there is no default release yet.
