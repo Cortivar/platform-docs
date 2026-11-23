@@ -1,10 +1,11 @@
 # Cortivar Docs
 
-Run a local Knowledge workspace for your team’s repository notes and a worker
-for repeatable jobs. **Tool Desk** is the terminal menu. **Console** is the
-local browser UI. Start here to install both on one machine.
+Cortivar is a set of local developer tools. **Knowledge** keeps repository
+guidance, **Workflows** runs repeatable jobs, and the **Requirements preview**
+builds a brief from sample records. Start with **Tool Desk**, the terminal UI
+included with Cortivar. **Console** is the browser interface for your host.
 
-[Install](#install) · [Choose a version](#choose-a-version) · [Platform packages](docs/packages.md) · [CLI and MCP](docs/operations.md) · [Release downloads](https://github.com/Cortivar/platform-docs/releases)
+[Install](#install) · [Open Tool Desk](#open-tool-desk) · [Choose a version](#choose-a-version) · [Platform packages](docs/packages.md) · [CLI and MCP](docs/operations.md) · [Release downloads](https://github.com/Cortivar/platform-docs/releases)
 
 ## Install
 
@@ -34,6 +35,26 @@ Node 24 and a working local Docker daemon; check the
 Only here to join an existing shared workspace in a browser? Open the HTTPS
 address from its owner and sign in with your human workspace credential.
 
+## Open Tool Desk
+
+After installation, run this in an interactive terminal:
+
+```text
+cortivar tui
+```
+
+`cortivar` opens the same screen. Use ↑/↓ or `j`/`k` to move, Enter to select,
+and `q` to quit. `cortivar --plain` opens a numbered menu instead. If the
+command isn't on your PATH yet, use the launcher path printed by the installer.
+You can open the TUI before creating a workspace or starting any service.
+
+In v0.0.1, **Meltemia** is an older name still printed by the installer and
+workspace menu. With the full Cortivar install, the workspace package is
+already present: choose **Create or join a workspace** when you're ready.
+For jobs, open **Manage Cortivar host service → Workflows and recent runs**
+or use `cortivar jobs list`. With the full install, try the offline brief
+from your shell with `cortivar requirements preview`.
+
 ## Choose a version
 
 To install **v0.0.1**, copy the line for your shell:
@@ -60,10 +81,20 @@ If `stable` reads `unpublished`, there is no default release yet.
 
 ### Launcher only
 
-On macOS or Linux, run `curl -fsSL https://cortivar.com/get.sh | sh -s -- --role launcher`.
-On Windows, save [install.ps1](https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1)
-and run `.\install.ps1 -Role launcher` in PowerShell from that directory.
-To pin either launcher-only install, add `--version v0.0.1` or `-Version v0.0.1`, respectively.
+To open the TUI without installing the workspace package, use one of these
+instead of the full install, then run `cortivar tui`:
+
+```sh
+curl -fsSL https://cortivar.com/get.sh | sh -s -- --role launcher
+```
+
+```powershell
+irm https://cortivar.com/desk.ps1 | iex
+```
+
+Both select latest stable. To pin the launcher on macOS/Linux, append
+`--version v0.0.1`. On Windows, save [install.ps1](https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1)
+and run `.\install.ps1 -Role launcher -Version v0.0.1` from that directory.
 
 ## Start using the host
 

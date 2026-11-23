@@ -44,6 +44,9 @@ try {
         }
     }
     $probeEntry = $false
+    # The terminal-only entry must succeed with a launcher-only catalog.
+    Get-Content "$root/desk.ps1" -Raw | iex
+    Assert-Requests @("$origin/install.ps1","$origin/channels/stable","$origin/versions/v1.10.0/files.tsv")
     & $installer -Role launcher
     Assert-Requests @("$origin/channels/stable","$origin/versions/v1.10.0/files.tsv")
     & $installer -Role launcher -Version latest
