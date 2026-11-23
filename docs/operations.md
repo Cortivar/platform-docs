@@ -64,6 +64,29 @@ interval. To cancel a queued or running job, use `cortivar jobs cancel RUN_ID`.
 | `cortivar service restart` | Restart the registered worker; queued jobs and schedules persist |
 | `cortivar service enable` / `disable` | Start now and at login, or stop and turn off autostart |
 
+## Uninstall a tool or the app
+
+Check `cortivar --help` first. **The v0.0.1 and v0.0.2 releases do not include
+the uninstall command.** On a legacy Linux x64 host, keep the old workspace
+intact if you still need its shared HTTPS service or data; see [Existing Linux
+x64 hosts](packages.md#existing-linux-x64-hosts).
+
+In builds that list `uninstall`, choose **Manage installed tools / uninstall
+Cortivar** in Tool Desk, or run the command for the tool you want:
+
+| Command | What happens |
+| --- | --- |
+| `cortivar uninstall knowledge` | Removes Knowledge; keeps its database and credentials. |
+| `cortivar uninstall workflows` | Stops job execution; keeps the queue, schedules and history. |
+| `cortivar uninstall requirements` | Removes the preview; other tools remain available. |
+| `cortivar uninstall all --dry-run` | Lists the paths and service action without changing them. |
+| `cortivar uninstall all` | Retires this account’s app and login service and prints the private recovery directory. |
+
+`cortivar install TOOL` restores an individual tool from its local cache. Before
+retiring the app, close the console and foreground workers. The recovery copy
+keeps local files under their original home-relative paths. External services
+and Docker volumes are not included or deleted.
+
 ## Troubleshooting
 
 - **Command not found:** use the executable path printed at install.
