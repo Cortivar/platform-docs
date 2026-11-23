@@ -1,0 +1,7 @@
+*.zip
+*.gz
+*.exe
+*.tgz
+*.tar
+out/
+dist/
