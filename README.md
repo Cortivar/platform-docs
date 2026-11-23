@@ -25,6 +25,14 @@ curl -fsSL https://cortivar.com/get.sh | sh
 irm https://cortivar.com/get.ps1 | iex
 ```
 
+**Prefer a download?** Open the [GitHub release](https://github.com/Cortivar/platform-docs/releases)
+for the version you want. When it lists **Cortivar-Setup.exe**, download it,
+double-click the file, choose **Install**, then **Open Tool Desk**. The setup program
+downloads the x64 or ARM64 files for that release and installs them for your
+account. **Install-Cortivar.ps1** is the same installer for PowerShell.
+The `v0.0.1` Windows executables are launchers, not setup programs; use the command
+above for a full install of the latest stable release, or [pin v0.0.1](#choose-a-version).
+
 The short URLs point to the installer scripts in this repository. In PowerShell,
 `irm` downloads the script and `iex` runs it.
 
