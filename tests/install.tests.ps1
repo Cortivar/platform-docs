@@ -14,6 +14,8 @@ try {
     $channelVersion = 'v1.10.0'
     function Invoke-RestMethod([string]$Uri) {
         $requests.Add($Uri)
+        if ($Uri.EndsWith('/install.ps1')) { return Get-Content -LiteralPath $installer -Raw }
+        if ($Uri.EndsWith('/files.tsv') -and $probeEntry) { throw 'Reached install catalog' }
         if ($Uri.EndsWith('/stable')) { return $channelVersion }
         if ($Uri -cnotmatch '/versions/(v1\.10\.0|v1\.9\.9|v2\.0\.0-rc\.1)/files\.tsv$') { throw 'No such release catalog' }
         return $env:CORTIVAR_FIXTURE_CATALOG
@@ -25,6 +27,23 @@ try {
         if (($requests -join ',') -cne ($Expected -join ',')) { throw "Unexpected version resolution: $requests" }
         $requests.Clear()
     }
+    # Run the same pipeline as a user. Stop at the catalog so we can test a
+    # different stable pointer without downloading a host package.
+    $root = Split-Path $installer
+    $probeEntry = $true
+    $entries = @(Get-Item "$root/get.ps1") + @(Get-ChildItem "$root/versions/*/get.ps1")
+    foreach ($entry in $entries) {
+        $reached = $false
+        try { Get-Content -LiteralPath $entry.FullName -Raw | iex } catch { $reached = $_ -like '*Reached install catalog*' }
+        if (!$reached) { throw "Could not run $($entry.FullName)" }
+        if ($entry.Directory.Name -like 'v*') {
+            $tag = $entry.Directory.Name
+            Assert-Requests @("https://raw.githubusercontent.com/Cortivar/platform-docs/$tag/install.ps1","$origin/versions/$tag/files.tsv")
+        } else {
+            Assert-Requests @("$origin/install.ps1","$origin/channels/stable","$origin/versions/$channelVersion/files.tsv")
+        }
+    }
+    $probeEntry = $false
     & $installer -Role launcher
     Assert-Requests @("$origin/channels/stable","$origin/versions/v1.10.0/files.tsv")
     & $installer -Role launcher -Version latest

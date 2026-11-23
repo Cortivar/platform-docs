@@ -15,14 +15,17 @@ Silicon Mac does not download the Intel, Windows or Linux builds.
 **macOS or Linux** — in a terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.sh | sh
+curl -fsSL https://cortivar.com/get.sh | sh
 ```
 
 **Windows** — in PowerShell:
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1')))
+irm https://cortivar.com/get.ps1 | iex
 ```
+
+The short URLs point to the installer scripts in this repository. In PowerShell,
+`irm` downloads the script and `iex` runs it.
 
 **Expected:** the installer prints the version and the full launcher path.
 There’s no Go, Rust or Python toolchain to install. **Linux x64 hosts** need
@@ -38,24 +41,29 @@ To install **v0.0.1**, copy the line for your shell:
 **macOS / Linux**
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.sh | sh -s -- --version v0.0.1
+curl -fsSL https://cortivar.com/get.sh | sh -s -- --version v0.0.1
 ```
 
 **Windows PowerShell**
 
 ```powershell
-& ([scriptblock]::Create((irm 'https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1'))) -Version v0.0.1
+irm https://cortivar.com/v0.0.1/get.ps1 | iex
 ```
 
 For another version, replace `v0.0.1` with its exact tag from
 [Releases](https://github.com/Cortivar/platform-docs/releases). This also works
 for published prereleases (for example, `v0.1.0-rc.1`).
-`0.0.1` and `v0.0.1` select the same catalog. To install just the launcher,
-append `--role launcher` (macOS/Linux) or `-Role launcher` (PowerShell) to
-the pinned command above.
+Use the full `v` tag in the PowerShell URL.
 An exact pin bypasses [`channels/stable`](channels/stable); if that catalog
 doesn’t exist, the installer stops rather than choosing another build.
 If `stable` reads `unpublished`, there is no default release yet.
+
+### Launcher only
+
+On macOS or Linux, run `curl -fsSL https://cortivar.com/get.sh | sh -s -- --role launcher`.
+On Windows, save [install.ps1](https://raw.githubusercontent.com/Cortivar/platform-docs/main/install.ps1)
+and run `.\install.ps1 -Role launcher` in PowerShell from that directory.
+To pin either launcher-only install, add `--version v0.0.1` or `-Version v0.0.1`, respectively.
 
 ## Start using the host
 
