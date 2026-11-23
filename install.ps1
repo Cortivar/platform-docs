@@ -1,8 +1,25 @@
 param([ValidateNotNullOrEmpty()][string]$Version = 'latest', [ValidateSet('host','launcher')][string]$Role = 'host')
 $ErrorActionPreference = 'Stop'
 $docs = 'https://raw.githubusercontent.com/Cortivar/platform-docs/main'
-$arch = if ($env:PROCESSOR_ARCHITEW6432) { $env:PROCESSOR_ARCHITEW6432 } else { $env:PROCESSOR_ARCHITECTURE }
-$target = switch ($arch) { 'AMD64' { 'windows-amd64' } 'ARM64' { 'windows-arm64' } default { throw 'Unsupported Windows architecture.' } }
+# An emulated x64 process on Windows ARM64 may report AMD64 in its environment.
+# Select by the OS's native machine, not that of the PowerShell/Setup process.
+if (-not ('Cortivar.Install.NativeMachine' -as [type])) {
+    Add-Type -Namespace Cortivar.Install -Name NativeMachine -MemberDefinition @'
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError=true)]
+        private static extern bool IsWow64Process2(System.IntPtr process, out ushort processMachine, out ushort nativeMachine);
+        public static ushort Get() {
+            ushort process, native;
+            if (!IsWow64Process2(new System.IntPtr(-1), out process, out native))
+                throw new System.ComponentModel.Win32Exception(System.Runtime.InteropServices.Marshal.GetLastWin32Error());
+            return native;
+        }
+'@
+}
+$target = switch ([Cortivar.Install.NativeMachine]::Get()) {
+    0x8664 { 'windows-amd64' }
+    0xAA64 { 'windows-arm64' }
+    default { throw "Unsupported native Windows machine: $_" }
+}
 if ($Version -ceq 'latest') {
     $Version = ([string](Invoke-RestMethod "$docs/channels/stable")).Trim()
     if ($Version -ceq 'unpublished') { throw 'No stable release has been published yet. To install a published prerelease, specify its exact version.' }

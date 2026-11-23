@@ -3,12 +3,20 @@ $ErrorActionPreference = 'Stop'
 $tmp = Join-Path ([IO.Path]::GetTempPath()) ([Guid]::NewGuid())
 $prev = $env:LOCALAPPDATA
 $oldPath = [Environment]::GetEnvironmentVariable('Path','User')
+$oldArch = $env:PROCESSOR_ARCHITECTURE
+$oldWow = $env:PROCESSOR_ARCHITEW6432
 [void][IO.Directory]::CreateDirectory($tmp)
 try {
     $env:LOCALAPPDATA = $tmp
     $binary = Join-Path $env:SystemRoot 'System32\where.exe'
     $hash = (Get-FileHash $binary).Hash.ToLowerInvariant()
-    $platform = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'windows-arm64' } else { 'windows-amd64' }
+    # Derive the expected target independently of the installer, and make
+    # process architecture variables misleading (as with emulated hosts).
+    $platform = switch ((Get-CimInstance Win32_Processor | Select-Object -First 1).Architecture) {
+        9 { 'windows-amd64' } 12 { 'windows-arm64' } default { throw 'Unsupported test machine' }
+    }
+    $env:PROCESSOR_ARCHITECTURE = 'x86'
+    $env:PROCESSOR_ARCHITEW6432 = if ($platform -eq 'windows-arm64') { 'AMD64' } else { 'ARM64' }
     $env:CORTIVAR_FIXTURE_CATALOG = "launcher-$platform`t$hash`thttps://fixture/launcher"
     $requests = New-Object 'System.Collections.Generic.List[string]'
     $channelVersion = 'v1.10.0'
@@ -76,6 +84,8 @@ try {
     try { & $installer -Role launcher } catch { $rejected = $_ -like '*Unmanaged*' }
     if (!$rejected -or [IO.File]::ReadAllText($exe) -ne 'unrelated') { throw 'replaced unmanaged launcher' }
 } finally {
+    $env:PROCESSOR_ARCHITECTURE = $oldArch
+    $env:PROCESSOR_ARCHITEW6432 = $oldWow
     $env:LOCALAPPDATA = $prev
     Remove-Item Env:CORTIVAR_FIXTURE_CATALOG -ErrorAction SilentlyContinue
     [Environment]::SetEnvironmentVariable('Path',$oldPath,'User')
