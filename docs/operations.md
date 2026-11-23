@@ -44,9 +44,9 @@ interval. To cancel a queued or running job, use `cortivar jobs cancel RUN_ID`.
 2. Map its folder to the repository. Grant the configured agent read access
    to **both** the repository and the page group. The mapping does not grant
    access by itself.
-3. Configure the agent client to launch a **stdio MCP server**. On macOS,
-   Windows and Linux ARM64, choose the absolute path of the installed `cortivar`
-   executable with `mcp` as its one argument. On Linux x64, choose the installed
+3. Configure the agent client to launch a **stdio MCP server**. On a bundled
+   host ZIP, choose the absolute path of the installed `cortivar`
+   executable with `mcp` as its one argument. On the legacy Linux x64 script host, choose the installed
    `meltemia` workspace executable with the same argument. The launcher supplies
    the local agent credential. Don't put the human sign-in token in this config.
 4. Ask: “Retrieve guidance for `importer`. Why do nightly imports use UTC?

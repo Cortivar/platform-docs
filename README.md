@@ -29,8 +29,9 @@ The short URLs point to the installer scripts in this repository. In PowerShell,
 `irm` downloads the script and `iex` runs it.
 
 **Expected:** the installer prints the version and the full launcher path.
-There’s no Go, Rust or Python toolchain to install. **Linux x64 hosts** need
-Node 24 and a working local Docker daemon; check the
+There’s no Go, Rust or Python toolchain to install. **On Linux x64, the v0.0.1
+workspace host uses Docker and Node 24.** Releases that ship a host ZIP instead
+include PostgreSQL and need neither. Check the
 [requirements for your target](docs/packages.md#which-files-do-i-get).
 Only here to join an existing shared workspace in a browser? Open the HTTPS
 address from its owner and sign in with your human workspace credential.
@@ -98,10 +99,10 @@ and run `.\install.ps1 -Role launcher -Version v0.0.1` from that directory.
 
 ## Start using the host
 
-1. Run `cortivar`. On macOS, Windows and Linux ARM64, choose **Create or join
+1. Run `cortivar`. With a bundled host ZIP, choose **Create or join
    a workspace → Host on this machine**. First setup creates your private
    database and credentials, enables the user service and prints a browser link.
-2. **Linux x64:** choose **Host a workspace here**. To hand that workspace
+2. **Legacy Linux x64 (`v0.0.1`, `install-tui.sh`) instead:** choose **Host a workspace here**. To hand that workspace
    to the worker, stop the independent workspace from its menu, then run
    `cortivar service knowledge on`, `cortivar service enable`, and `cortivar console`.
 3. Open the private link. **Services** shows the worker and workspace status.

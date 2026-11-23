@@ -9,6 +9,53 @@ import {spawnSync} from 'node:child_process'
 import {gzipSync} from 'node:zlib'
 import {createHash} from 'node:crypto'
 const script=new URL('../install.sh',import.meta.url)
+test('Linux x64 uses the pinned package format and never switches launchers after a refused upgrade', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'linux-catalog-'))
+  t.after(() => fs.rmSync(root, {recursive:true}))
+  const bin = path.join(root, 'bin'), link = path.join(root, '.local/bin/cortivar')
+  fs.mkdirSync(bin)
+  fs.writeFileSync(path.join(bin,'uname'), "#!/bin/sh\necho 'Linux x86_64'\n", {mode:0o700})
+  fs.writeFileSync(path.join(bin,'curl'), '#!/bin/sh\nwhile [ "$#" -gt 3 ]; do shift; done\ncp "$HOME/${1##*/}" "$3"\n', {mode:0o700})
+  const env = {...process.env, HOME:root, PATH:bin+':'+process.env.PATH}
+  const run = (...args) => spawnSync('sh',[script.pathname,...args], {env,encoding:'utf8'})
+  function catalog(legacy) {
+    const pkg = legacy ? 'install-tui.sh' : 'cortivar-host-linux-amd64.zip'
+    const launcher = `#!/bin/sh\nset -eu\nif [ "$1" = internal-check-bundled-install ]; then test ! -e "$HOME/refuse"; exit; fi\ntest "$1 $2" = "install meltemia"\ntest "\${3##*/}" = "${legacy ? pkg : 'host.zip'}"\ncmp "$3" "$HOME/${pkg}"\ntest ! -e "$HOME/fail-install"\n`
+    const rows = []
+    for (const [role, name, bytes] of [
+      ['launcher', 'desk.gz', gzipSync(launcher)], ['host',pkg,Buffer.from('host')],
+      ['worker','worker.gz',gzipSync('sidecar')]
+    ]) {
+      fs.writeFileSync(path.join(root,name),bytes)
+      rows.push(`${role}-linux-amd64\t${createHash('sha256').update(bytes).digest('hex')}\thttps://fixture/${name}`)
+    }
+    fs.writeFileSync(path.join(root,'files.tsv'),rows.join('\n')+'\n')
+  }
+  catalog(true)
+  assert.equal(run('--version','v0.0.1').status,0)
+  const original = fs.readlinkSync(link)
+  catalog(false)
+  fs.writeFileSync(path.join(root,'refuse'),'')
+  for (const role of ['host','launcher']) {
+    assert.notEqual(run('--role',role,'--version','v9.0.0').status,0)
+    assert.equal(fs.readlinkSync(link),original)
+  }
+  fs.unlinkSync(path.join(root,'refuse'))
+  fs.writeFileSync(path.join(root,'fail-install'),'')
+  assert.notEqual(run('--version','v9.0.0').status,0)
+  assert.equal(fs.readlinkSync(link),original)
+  fs.unlinkSync(path.join(root,'fail-install'))
+  fs.unlinkSync(path.join(root,'worker.gz')) // full ZIP already contains this worker
+  fs.writeFileSync(path.join(root,'stable'),'v9.0.0')
+  assert.equal(run().status,0)
+  const bundled = fs.readlinkSync(link)
+  assert.notEqual(bundled,original)
+  const state=path.join(root,'.local/share/cortivar/desktop')
+  fs.mkdirSync(state);fs.writeFileSync(path.join(state,'selected'),'bundle')
+  catalog(true)
+  assert.match(run('--version','v0.0.1').stderr,/Bundled Linux host left unchanged/)
+  assert.equal(fs.readlinkSync(link),bundled)
+})
 test('install, reinstall, corrupt package, unmanaged command, unpublished release',()=>{
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'public-installer-')),bin=path.join(root,'bin'),home=path.join(root,'user home')
  try{

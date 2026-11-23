@@ -15,7 +15,7 @@ matching launcher plus the files listed below.
 | Windows x64 | `windows-amd64` | `cortivar-host-windows-amd64.zip` | Interactive user session; Task Scheduler, bundled PostgreSQL |
 | Windows 11 ARM64 | `windows-arm64` | `cortivar-host-windows-arm64.zip` | Same, with Windows x64 emulation for the bundled database |
 | Linux ARM64 | `linux-arm64` | `cortivar-host-linux-arm64.zip` | systemd user manager; bundled PostgreSQL |
-| Linux x64 | `linux-amd64` | `install-tui.sh` and `cortivar-host-linux-amd64.gz` | systemd user manager, Node 24, access to a local Docker daemon and the pinned database image |
+| Linux x64 | `linux-amd64` | Check the release catalog: `v0.0.1` has `install-tui.sh` plus a worker; bundled releases have `cortivar-host-linux-amd64.zip` | systemd user manager. The ZIP includes PostgreSQL; only the older script host needs Node 24 and Docker. |
 
 Launcher assets are named `cortivar-TARGET.gz` on Unix and `cortivar-TARGET.exe`
 on Windows. For example, a full Windows x64 install downloads **two files**:
@@ -23,6 +23,16 @@ on Windows. For example, a full Windows x64 install downloads **two files**:
 the complete release inventory; that isn't a list of things you need to install.
 With the launcher-only role, the installer skips the host package. Linux x64
 still receives the launcher’s separate worker executable.
+
+### Existing Linux x64 hosts
+
+The bundled host is local-only. It has a different database, credential store
+and job queue from the Docker host; installing it is not a data migration.
+The public installer stops before switching your launcher if it finds the old
+workspace, profiles, worker data or service. Keep using your existing pinned
+release for shared HTTPS hosting. To try the bundle alongside it, use a
+separate Linux user account. Don't remove workspace directories or units to
+get past this check. Existing bundled installs can reinstall over their own data.
 
 ## What does “latest” mean?
 
