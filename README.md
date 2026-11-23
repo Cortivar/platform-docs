@@ -23,11 +23,31 @@ Invoke-WebRequest -UseBasicParsing https://raw.githubusercontent.com/Cortivar/pl
 & $installer
 ```
 
-The default installs the host package, then prints the next terminal command.
-Use `--role launcher` / `-Role launcher` for Tool Desk alone. Select an explicit
-version with `--version vX.Y.Z` / `-Version vX.Y.Z`. Otherwise the installer
-uses `channels/stable`. If that channel is `unpublished`, there is no tested
-public full-platform version available yet.
+**Default: latest stable, full host install.** The installer reads
+[`channels/stable`](channels/stable) once, then uses that exact version's
+catalog for every download. No installed copy updates in the background;
+rerunning the installer resolves the default again. Use `--role launcher`
+or `-Role launcher` for Tool Desk alone.
+
+After downloading the script above, choose **one** invocation:
+
+| Install | macOS / Linux | Windows PowerShell |
+| --- | --- | --- |
+| Latest stable | `sh install-cortivar.sh` | `& $installer` |
+| Same default, explicit | `sh install-cortivar.sh --version latest` | `& $installer -Version latest` |
+| Exact release | `sh install-cortivar.sh --version v1.2.0` | `& $installer -Version v1.2.0` |
+| Exact prerelease | `sh install-cortivar.sh --version v1.3.0-rc.1` | `& $installer -Version v1.3.0-rc.1` |
+
+The versions in the table are examples; choose a published version from
+[Releases](https://github.com/Cortivar/platform-docs/releases). `1.2.0`
+and `v1.2.0` select the same catalog. A pin bypasses the stable channel
+entirely. An unknown version or checksum mismatch stops the install; it never
+silently substitutes a different release. If `stable` says `unpublished`,
+the default stops until a stable release exists. An explicitly pinned,
+published prerelease is still installable. The pin selects **product binaries**,
+not a database snapshot.
+
+### Start using the host
 
 1. Run `cortivar`. Choose the workspace action, then **Host on this machine**
    (Linux x86-64: **Host a workspace here**). The first run creates a new local
@@ -55,6 +75,21 @@ loopback-only. To use an existing shared workspace instead, obtain its HTTPS
 URL and credentials from its owner.
 
 ### Releases
+
+A product commit runs builds and tests. Pushing a new version tag builds that
+commit and checks the install and service workflow across all six supported
+targets. Only after those checks pass are the binaries published as assets
+and a `versions/TAG/files.tsv` catalog committed here. A newer final release
+advances `stable`; a prerelease or an older maintenance release does not.
+For example, after `v1.10.0`, publishing `v1.9.10` or `v2.0.0-rc.1` leaves
+the default at `v1.10.0`. Each remains available by its exact tag.
+
+This follows [Semantic Versioning §3 and §11](https://semver.org/spec/v2.0.0.html)
+for unchanged released versions and numeric precedence. Default selection is
+an installer policy: like [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux)
+and the [.NET install scripts](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#options),
+we resolve a moving channel for convenience and accept an exact version for
+repeatable installs.
 
 Use only a released catalog. The release files are listed under **Releases**,
 not in this Git repository's file tree. Retain the matching catalog when

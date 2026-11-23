@@ -1,11 +1,14 @@
-param([string]$Version, [ValidateSet('host','launcher')][string]$Role = 'host')
+param([ValidateNotNullOrEmpty()][string]$Version = 'latest', [ValidateSet('host','launcher')][string]$Role = 'host')
 $ErrorActionPreference = 'Stop'
 $docs = 'https://raw.githubusercontent.com/Cortivar/platform-docs/main'
 $arch = if ($env:PROCESSOR_ARCHITEW6432) { $env:PROCESSOR_ARCHITEW6432 } else { $env:PROCESSOR_ARCHITECTURE }
 $target = switch ($arch) { 'AMD64' { 'windows-amd64' } 'ARM64' { 'windows-arm64' } default { throw 'Unsupported Windows architecture.' } }
-if (!$Version) { $Version = ([string](Invoke-RestMethod "$docs/channels/stable")).Trim() }
-if ($Version -eq 'unpublished') { throw 'No tested full-platform release has been published yet.' }
-if ($Version -cnotmatch '^v[0-9][0-9A-Za-z.-]*$') { throw 'Invalid release version.' }
+if ($Version -ceq 'latest') {
+    $Version = ([string](Invoke-RestMethod "$docs/channels/stable")).Trim()
+    if ($Version -ceq 'unpublished') { throw 'No stable release has been published yet. To install a published prerelease, specify its exact version.' }
+    if (!$Version.StartsWith('v') -or $Version.Contains('-')) { throw 'Invalid stable release pointer.' }
+} elseif ($Version -cmatch '^[0-9]') { $Version = "v$Version" }
+if ($Version -cnotmatch '\Av(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[a-z0-9]+([.-][a-z0-9]+)*)?\z') { throw 'Expected latest or an exact release version.' }
 $catalog = ([string](Invoke-RestMethod "$docs/versions/$Version/files.tsv")).Trim() -split '\r?\n'
 function Get-VerifiedAsset($name,$dest) {
     $rows = @($catalog | ForEach-Object { if (($_ -split '\s+')[0] -ceq $name) { $_ } })

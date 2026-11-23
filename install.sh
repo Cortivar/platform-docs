@@ -6,7 +6,7 @@ install_cortivar() (
   umask 077
   docs=https://raw.githubusercontent.com/Cortivar/platform-docs/main
   role=host
-  version=''
+  version=latest
   while [ "$#" -gt 0 ]; do
     case "$1" in
       --version) version=${2:?missing version}; shift 2;;
@@ -24,11 +24,19 @@ install_cortivar() (
   tmp=$(mktemp -d); staging=''
   trap 'rm -rf -- "$tmp"; [ -z "$staging" ] || rm -rf -- "$staging"' EXIT
   trap 'exit 1' HUP INT TERM
-  if [ -z "$version" ]; then get "$docs/channels/stable" "$tmp/stable"; version=$(cat "$tmp/stable"); fi
-  if [ "$version" = unpublished ]; then echo 'No tested full-platform release has been published yet.' >&2; exit 1; fi
-  case "$version" in *[!0-9a-zA-Z.-]*|'') exit 2;; esac
-  case "$version" in v[0-9]*);; *) exit 2;; esac
-  get "$docs/versions/$version/files.tsv" "$tmp/catalog"
+  if [ "$version" = latest ]; then
+    get "$docs/channels/stable" "$tmp/stable"
+    version=$(cat "$tmp/stable")
+    case "$version" in
+      unpublished) echo 'No stable release has been published yet. To install a published prerelease, specify its exact version.' >&2; exit 1;;
+      *-*|[!v]*) echo 'Invalid stable release pointer.' >&2; exit 1;;
+    esac
+  else
+    case "$version" in [0-9]*) version="v$version";; esac
+  fi
+  case "$version" in *[!a-z0-9.-]*|'') echo 'Invalid release version.' >&2; exit 2;; esac
+  printf '%s\n' "$version" | LC_ALL=C grep -Eq '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[a-z0-9]+([.-][a-z0-9]+)*)?$' || { echo 'Expected latest or an exact release version.' >&2; exit 2; }
+  get "$docs/versions/$version/files.tsv" "$tmp/catalog" || { echo "Could not download the catalog for $version." >&2; exit 1; }
   fetch_asset() {
     key=$1; dest=$2
     url=$(awk -v k="$key" '$1==k{v=$3;n++}END{if(n!=1)exit 1;print v}' "$tmp/catalog") || { echo "No unique asset for $key." >&2; exit 1; }
