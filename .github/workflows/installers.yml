@@ -1,0 +1,21 @@
+name: Installer contracts
+on: [push, pull_request, workflow_dispatch]
+permissions: {contents: read}
+jobs:
+  shell:
+    strategy:
+      matrix: {os: [ubuntu-latest, macos-latest]}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - uses: actions/setup-node@v4
+        with: {node-version: 24}
+      - run: sh -n install.sh && node --test tests/install.test.mjs
+  powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {persist-credentials: false}
+      - shell: powershell
+        run: ./tests/install.tests.ps1

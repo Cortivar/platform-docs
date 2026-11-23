@@ -28,7 +28,12 @@ try {
     $digest = (Get-FileHash $launcher).Hash
     $package = Join-Path $stage 'host.zip'
     if ($Role -eq 'host') { Get-VerifiedAsset "host-$target" $package }
-    if ([IO.File]::Exists($exe)) { [IO.File]::Replace($launcher,$exe,(Join-Path $stage 'previous.exe')) } else { [IO.File]::Move($launcher,$exe) }
+    if ([IO.File]::Exists($exe)) {
+        if ((Get-FileHash $exe).Hash -ne $digest) {
+            try { [IO.File]::Replace($launcher,$exe,(Join-Path $stage 'previous.exe')) }
+            catch { throw 'Could not replace the launcher. Close Tool Desk and the console, stop the host service, then retry.' }
+        }
+    } else { [IO.File]::Move($launcher,$exe) }
     [IO.File]::WriteAllText($marker,$digest)
     $old = [Environment]::GetEnvironmentVariable('Path','User')
     if (($old -split ';') -notcontains $bin) { [Environment]::SetEnvironmentVariable('Path',("$old;$bin").Trim(';'),'User') }
