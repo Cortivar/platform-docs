@@ -66,6 +66,14 @@ interval. To cancel a queued or running job, use `cortivar jobs cancel RUN_ID`.
 
 ## Upgrade the TUI and service in place
 
+**If your Tool Desk has “Check for updates,” start there.** It compares your
+installation with the stable channel. Select **Update now** to update in place.
+The full host keeps local data, resumes a previously running service, and leaves
+a stopped service stopped. A launcher-only installation stays launcher-only.
+The same check is available as `cortivar update --check`. This feature was
+added after the `v0.0.3` tag; for `v0.0.1`–`v0.0.3`, use the shell steps below
+for a bundled host, or the existing-host instructions for legacy Docker installs.
+
 For an existing **bundled host** (including Linux x64 on `v0.0.2`), run the
 full installer under the same user account. It updates Tool Desk and the host
 worker together. Your workspace, credentials, schedules and run history stay
