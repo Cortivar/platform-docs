@@ -64,6 +64,35 @@ interval. To cancel a queued or running job, use `cortivar jobs cancel RUN_ID`.
 | `cortivar service restart` | Restart the registered worker; queued jobs and schedules persist |
 | `cortivar service enable` / `disable` | Start now and at login, or stop and turn off autostart |
 
+## Upgrade the TUI and service in place
+
+For an existing **bundled host** (including Linux x64 on `v0.0.2`), run the
+full installer under the same user account. It updates Tool Desk and the host
+worker together. Your workspace, credentials, schedules and run history stay
+in place. You don't need to uninstall or initialize another workspace.
+
+Check [latest stable](../channels/stable) first. If you're already on that
+version, there's nothing to upgrade. `v0.0.2` has no `cortivar update`
+command; changes on the source branch become installable when released.
+
+On **Linux or macOS with a running registered service**, let active jobs
+finish, then close Tool Desk and the console. From your shell:
+
+```sh
+cortivar service stop &&
+  (script=$(mktemp) || exit 1; trap 'rm -f "$script"' EXIT
+   curl -fsSL https://cortivar.com/get.sh -o "$script" && sh "$script") &&
+  cortivar service start &&
+  cortivar service status
+```
+
+For a host you haven't started, just run the full installer. Use the default
+host role, not `--role launcher`, to update the worker too. To select an exact
+release instead, pass `--version vX.Y.Z` to the script. If setup fails, check
+its message before starting the service again; don't remove your data.
+The old [Linux x64 Docker layout](packages.md#existing-linux-x64-hosts) is
+a separate case and cannot be converted by this procedure.
+
 ## Uninstall a tool or the app
 
 Check `cortivar --help` first. **The v0.0.1 and v0.0.2 releases do not include

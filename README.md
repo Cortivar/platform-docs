@@ -122,6 +122,7 @@ link. If you installed just the launcher, install the host role before these ste
 
 ## What next?
 
+- [Upgrade Tool Desk and the service in place](docs/operations.md#upgrade-the-tui-and-service-in-place).
 - [Run a smoke-test job and read its log](docs/operations.md#run-your-first-job).
 - [Connect a coding agent over MCP](docs/operations.md#connect-an-agent).
 - [Check service status or troubleshoot an install](docs/operations.md#troubleshooting).
