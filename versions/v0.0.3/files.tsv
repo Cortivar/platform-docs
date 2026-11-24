@@ -1,0 +1,15 @@
+host-darwin-amd64	b1389080128fd33c1d61a1636f8c46b860b90a2ee38841c6eeb77537385d0fe0	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-darwin-amd64.zip
+host-darwin-arm64	e1346110144ea948a613ef045316f72912a473afe0b501cc0028aef737b7ec39	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-darwin-arm64.zip
+host-linux-amd64	3c61a0229b8a288b74caa1789c4b553c6b92efbc111ad0adb5fb9da5a4ceb0fa	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-linux-amd64.zip
+host-linux-arm64	7e34f6f3c49f5dbb12f9cb2a065dafce51110819200d9930f074aad5af46088b	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-linux-arm64.zip
+host-windows-amd64	4cfff4d27e8e4bc589cdb09e6bff75a5c4e3fcbf6b70ddb6ca0f666e6fb09722	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-windows-amd64.zip
+host-windows-arm64	b9c6c1f1dff1a18e44e63ba417e2786eee07797ee536a70e9fef6bd60f487742	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-windows-arm64.zip
+launcher-darwin-amd64	a7f31dfe5dfde17db8e2c448b7fe4a7e72db1be83c116143237bc83b9df72097	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-darwin-amd64.gz
+launcher-darwin-arm64	3cea13983d877f51e697552efd239c316f74bbfbfe3bc14481b8ec8226c125ce	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-darwin-arm64.gz
+launcher-linux-amd64	8b0d18dc9d24b109ee661e72f10ce1505d4f4ea59dd50e4d5bdeae0562399b0d	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-linux-amd64.gz
+launcher-linux-arm64	f242c4a4bd8e901ef37bbad1ca6974b534e5468665329dba9f3e9ad509634d9e	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-linux-arm64.gz
+launcher-windows-amd64	8a2a2730b96e0baa61d4955854540d2a0a4cb6b77d8cb6bd7e900634455352bf	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-windows-amd64.exe
+launcher-windows-arm64	f931135f55845299adc9329809e3b7c0b8446cf9d8de39337e9d853a66c76a9e	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-windows-arm64.exe
+script-windows	00109e067d0f29030ecbe54e88b0f71c997e322388665836f0080721b54d98c7	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/Install-Cortivar.ps1
+setup-windows	c819ccff9fa15540ee73f00c002c7df35cc83f1db146364bb801e81e377afd92	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/Cortivar-Setup.exe
+worker-linux-amd64	f0a49bada0e852a5eb3ffe9ea7636afac22cba1baaf0b3c73b0c587ae67de64b	https://github.com/Cortivar/platform-docs/releases/download/v0.0.3/cortivar-host-linux-amd64.gz
