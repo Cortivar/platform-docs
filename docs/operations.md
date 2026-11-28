@@ -38,13 +38,24 @@ interval. To cancel a queued or running job, use `cortivar jobs cancel RUN_ID`.
 
 ## Connect an agent
 
+**In v0.0.5**, open `cortivar tui` and choose **Connect an agent (MCP)**.
+Select **Knowledge**, or **Work Journal** and a space your agent can read.
+Choose **Start and test server** to check that the adapter starts and can
+read the workspace using the agent credential. The test session then closes.
+
+Choose **Add to an OpenCode project** to review and save the command in that
+project, or **Show setup for other clients** to copy the stdio configuration.
+Your coding agent starts the server when it connects.
+
+To check Knowledge access end to end, or configure it manually on older builds:
+
 1. Sign in to **Console → Knowledge** as the workspace owner. Create a
    repository record, for example `importer`, and publish a page named
    **Import schedule** explaining why nightly imports use UTC.
 2. Map its folder to the repository. Grant the configured agent read access
    to **both** the repository and the page group. The mapping does not grant
    access by itself.
-3. Configure the agent client to launch a **stdio MCP server**. On a bundled
+3. If you haven't used the Tool Desk setup, configure the agent client to launch a **stdio MCP server**. On a bundled
    host ZIP, choose the absolute path of the installed `cortivar`
    executable with `mcp` as its one argument. On the legacy Linux x64 script host, choose the installed
    `meltemia` workspace executable with the same argument. The launcher supplies
