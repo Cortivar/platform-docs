@@ -47,6 +47,33 @@ Choose **Add to an OpenCode project** to review and save the command in that
 project, or **Show setup for other clients** to copy the stdio configuration.
 Your coding agent starts the server when it connects.
 
+**For all projects in OpenCode, Codex or Claude Code**, register Knowledge
+once using the matching client CLI on the machine where it runs. Choose
+your installed launcher's path for your shell:
+
+```sh
+# macOS or Linux
+cortivar="$HOME/.local/bin/cortivar"
+```
+
+```powershell
+# Windows
+$cortivar = "$env:LOCALAPPDATA\Cortivar\bin\cortivar.exe"
+```
+
+Run the line for the client you use (the commands below work in either shell):
+
+```text
+opencode mcp add cortivar-knowledge --global -- "$cortivar" mcp
+codex mcp add cortivar-knowledge -- "$cortivar" mcp
+claude mcp add --scope user --transport stdio cortivar-knowledge -- "$cortivar" mcp
+```
+
+Check `/mcps` in OpenCode or `/mcp` in Codex or Claude Code. For Work Journal,
+run `cortivar work-journal projects` to find your space ID. For example, for
+space 12 use `cortivar-work-journal-12` as the server name and `"$cortivar"
+work-journal mcp 12` as the command after `--`.
+
 To check Knowledge access end to end, or configure it manually on older builds:
 
 1. Sign in to **Console → Knowledge** as the workspace owner. Create a
